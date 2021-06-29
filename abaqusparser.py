@@ -2,7 +2,7 @@
 # University of Oxford
 # AWE project 2020
 # 23 Giugno 2020
-
+import numpy as np
 # class representing abaqus input file
 # and functions for parsing
 
@@ -23,6 +23,7 @@ class AbaqusParser:
 		flagprintnextline = False # next line should be printed or not
 
 		for line in fid:
+			
 			if (flagprintnextline):
 				fout.write(line)
 				flagprintnextline = False
@@ -45,35 +46,36 @@ class AbaqusParser:
 
 	# read nodes from file
 	def ReadNodes(self):
+		ls=[]
 		fid = open(self.filename,'r')
 		nodesfilename = self.prefissofile + '-node.inp'
 		fout = open(nodesfilename,'w')
-
 		flagfoundnodes = False # block with nodes has been found
-
 		for line in fid:
 			if (flagfoundnodes): # this line may contain nodes
 				if (line[0] == '*'): # reached the end of nodes
 					flagfoundnodes = False
+					#line=str(node_num)
+					#fout.write(line)
 					break # needed because you may find also *Node Output
 				else:
 					fout.write(line)
+					line=line.strip('\n')
+					line2=line.split(',')
+					ls.append(line2)
 			if (line[0:5] == '*Node'): # these are the nodes
 				flagfoundnodes = True
-
 		fid.close()
 		fout.close()
-
-		return 1
+		return ls
 
 	# read bulk elements from file
 	def ReadBulkElems(self):
+		ls=[]
 		fid = open(self.filename,'r')
 		elemsfilename = self.prefissofile + '-bulk-elems.inp'
 		fout = open(elemsfilename,'w')
-
 		flagfoundelems = False # block with elements has been found
-
 		for line in fid:
 			if (flagfoundelems): # this line may contain elements
 				if (line[0] == '*'): # reached the end of elements
@@ -81,16 +83,19 @@ class AbaqusParser:
 					break # needed because you may find also *Element Output
 				else:
 					fout.write(line)
+					line2=line.strip('\n')
+					ls.append(line2.split(','))
 			if (line[0:8] == '*Element'): # these are the elements
 				flagfoundelems = True
-
 		fid.close()
 		fout.close()
-
-		return 1
-
-
-
+		ls=np.array(ls,dtype=int)
+		elemsfilename = self.prefissofile + '-elems.inp'
+		fout = open(elemsfilename,'w')
+		for i in range(ls.shape[0]):
+       			fout.write(str(ls[i])+"\n")
+		fout.close()  #关闭文件
+		return ls
 
 
 
