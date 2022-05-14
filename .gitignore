@@ -1,0 +1,12 @@
+*.rpy
+*.inp
+*.echo
+*.pyc
+*.rpy.2
+abaqus.rpy
+
+__pycache__/
+
+*.cfile
+
+*.msg
