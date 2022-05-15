@@ -74,8 +74,6 @@ class AbaqusParser:
 	def ReadBulkElems(self):
 		ls=[]
 		fid = open(self.filename,'r')
-		elemsfilename = self.prefissofile + '-bulk-elems.inp'
-		fout = open(elemsfilename,'w')
 		flagfoundelems = False # block with elements has been found
 		for line in fid:
 			if (flagfoundelems): # this line may contain elements
@@ -83,19 +81,17 @@ class AbaqusParser:
 					flagfoundelems = False
 					break # needed because you may find also *Element Output
 				else:
-					fout.write(line)
 					line=line.strip('\n')
 					ls.append(line.split(','))
 			if (line[0:8] == '*Element'): # these are the elements
 				flagfoundelems = True
 		fid.close()
-		fout.close()
 		ls=np.array(ls,dtype=int)
-		elemsfilename = self.prefissofile + '-elems.inp'
-		fout = open(elemsfilename,'w')
-		for i in range(ls.shape[0]):
-			fout.write(str(ls[i])+"\n")
-		fout.close()  #关闭文件
+		#elemsfilename = self.prefissofile + '-elems.inp'
+		#fout = open(elemsfilename,'w')
+		#for i in range(ls.shape[0]):
+		#	fout.write(str(ls[i])+"\n")
+		#fout.close()  #关闭文件
 		return ls
 
 	def ReadElsetElems(self,SetName):
@@ -155,8 +151,8 @@ class AbaqusParser:
 			face.append(array_elements[i][5])
 			array_faces.append(face)
 		array_faces=np.array(array_faces,dtype=int)
-		filename='array_faces.inp'
-		fout=open(filename,'w')
+		elemsfilename='array_faces.inp'
+		fout=open(elemsfilename,'w')
 		for i in range(array_faces.shape[0]):
 			fout.write(str(array_faces[i])+"\n")
 		fout.close() #关闭文件

@@ -10,3 +10,13 @@ __pycache__/
 *.cfile
 
 *.msg
+
+*.cae
+
+*.jnl
+
+*.rec
+
+*.1
+
+*.for
